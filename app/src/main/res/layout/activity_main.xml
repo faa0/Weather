@@ -80,8 +80,7 @@
             <ImageView
                 android:id="@+id/ivWeather"
                 android:layout_width="100dp"
-                android:layout_height="100dp"
-                android:src="@drawable/weather" />
+                android:layout_height="100dp"/>
 
             <TextView
                 android:id="@+id/tvTemp"
