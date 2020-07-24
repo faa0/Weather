@@ -11,6 +11,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -52,7 +53,7 @@ public class MainActivity extends AppCompatActivity {
             String url = String.format(WEATHER_URL, city);
             task.execute(url);
 
-            InputMethodManager imm = (InputMethodManager)getSystemService(Activity.INPUT_METHOD_SERVICE);
+            InputMethodManager imm = (InputMethodManager) getSystemService(Activity.INPUT_METHOD_SERVICE);
             imm.hideSoftInputFromWindow(getCurrentFocus().getRootView().getWindowToken(), 0);
         }
     }
@@ -91,16 +92,60 @@ public class MainActivity extends AppCompatActivity {
             super.onPostExecute(s);
             try {
                 JSONObject jsonObject = new JSONObject(s);
-                String city = jsonObject.getString("name");
+                String city = jsonObject.getString("name") + ", " + jsonObject.getJSONObject("sys").getString("country");
                 String jsonTemp = jsonObject.getJSONObject("main").getString("temp");
                 String description = jsonObject.getJSONArray("weather").getJSONObject(0).getString("description");
-                String temp=Math.round(Float.parseFloat(jsonTemp))+" °C";
+                String icon = jsonObject.getJSONArray("weather").getJSONObject(0).getString("icon");
+                String temp = Math.round(Float.parseFloat(jsonTemp)) + " °C";
                 tvCity.setText(city);
                 tvTemp.setText(temp);
                 tvDesc.setText(description);
+                setImage(ivWeather, icon);
             } catch (JSONException e) {
                 e.printStackTrace();
             }
+        }
+
+        private void setImage(final ImageView imageView, final String value) {
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    switch (value) {
+                        case "01d":
+                        case "01n":
+                            imageView.setImageDrawable(getResources().getDrawable(R.drawable.d01d));
+                            break;
+                        case "02d":
+                        case "02n":
+                            imageView.setImageDrawable(getResources().getDrawable(R.drawable.d02d));
+                            break;
+                        case "03d":
+                        case "03n":
+                            imageView.setImageDrawable(getResources().getDrawable(R.drawable.d03d));
+                            break;
+                        case "04d":
+                        case "04n":
+                            imageView.setImageDrawable(getResources().getDrawable(R.drawable.d04d));
+                            break;
+                        case "09d":
+                        case "09n":
+                            imageView.setImageDrawable(getResources().getDrawable(R.drawable.d09d));
+                            break;
+                        case "10d":
+                        case "10n":
+                            imageView.setImageDrawable(getResources().getDrawable(R.drawable.d10d));
+                            break;
+                        case "11d":
+                        case "11n":
+                            imageView.setImageDrawable(getResources().getDrawable(R.drawable.d11d));
+                            break;
+                        case "13d":
+                        case "13n":
+                            imageView.setImageDrawable(getResources().getDrawable(R.drawable.d13d));
+                            break;
+                    }
+                }
+            });
         }
     }
 }
