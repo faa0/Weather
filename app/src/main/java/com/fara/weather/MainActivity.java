@@ -30,8 +30,15 @@ public class MainActivity extends AppCompatActivity {
     private TextView tvCity;
     private TextView tvTemp;
     private TextView tvDesc;
+    private TextView tvPress;
+    private TextView tvHumidity;
+    private TextView tvWindSpeed;
 
     private ImageView ivWeather;
+    private ImageView ivHumidity;
+    private ImageView ivPressure;
+    private ImageView ivTemp;
+    private ImageView ivWind;
     private EditText etSearch;
 
     @Override
@@ -42,8 +49,15 @@ public class MainActivity extends AppCompatActivity {
         tvCity = findViewById(R.id.tvCity);
         tvTemp = findViewById(R.id.tvTemp);
         tvDesc = findViewById(R.id.tvDesc);
+        tvPress = findViewById(R.id.tvPress);
+        tvHumidity = findViewById(R.id.tvHumidity);
+        tvWindSpeed = findViewById(R.id.tvWindSpeed);
         ivWeather = findViewById(R.id.ivWeather);
         etSearch = findViewById(R.id.etSearch);
+        ivHumidity = findViewById(R.id.ivHumidity);
+        ivPressure = findViewById(R.id.ivPress);
+        ivTemp = findViewById(R.id.ivTemp);
+        ivWind = findViewById(R.id.ivWindSpeed);
     }
 
     public void onClickShowWeather(View view) {
@@ -55,6 +69,11 @@ public class MainActivity extends AppCompatActivity {
 
             InputMethodManager imm = (InputMethodManager) getSystemService(Activity.INPUT_METHOD_SERVICE);
             imm.hideSoftInputFromWindow(getCurrentFocus().getRootView().getWindowToken(), 0);
+
+            ivHumidity.setVisibility(View.VISIBLE);
+            ivPressure.setVisibility(View.VISIBLE);
+            ivTemp.setVisibility(View.VISIBLE);
+            ivWind.setVisibility(View.VISIBLE);
         }
     }
 
@@ -97,9 +116,16 @@ public class MainActivity extends AppCompatActivity {
                 String description = jsonObject.getJSONArray("weather").getJSONObject(0).getString("description");
                 String icon = jsonObject.getJSONArray("weather").getJSONObject(0).getString("icon");
                 String temp = Math.round(Float.parseFloat(jsonTemp)) + " °C";
+                String pressure = jsonObject.getJSONObject("main").getString("pressure") + " мм";
+                String humidity = jsonObject.getJSONObject("main").getString("humidity") + " %";
+                String windSpeed = jsonObject.getJSONObject("wind").getString("speed") + " м/с";
+
                 tvCity.setText(city);
                 tvTemp.setText(temp);
                 tvDesc.setText(description);
+                tvPress.setText(pressure);
+                tvHumidity.setText(humidity);
+                tvWindSpeed.setText(windSpeed);
                 setImage(ivWeather, icon);
             } catch (JSONException e) {
                 e.printStackTrace();
