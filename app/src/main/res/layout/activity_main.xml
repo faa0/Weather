@@ -48,7 +48,8 @@
                 android:id="@+id/etSearch"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="25dp" />
+                android:layout_margin="25dp"
+                android:inputType="text" />
         </LinearLayout>
     </androidx.cardview.widget.CardView>
 
@@ -99,8 +100,8 @@
         android:id="@+id/fabSearch"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:onClick="onClickShowWeather"
         android:layout_marginEnd="40dp"
+        android:onClick="onClickShowWeather"
         android:src="@drawable/ic_search"
         app:layout_constraintBottom_toBottomOf="@+id/cardView"
         app:layout_constraintEnd_toEndOf="parent"

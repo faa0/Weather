@@ -2,10 +2,12 @@ package com.fara.weather;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.Activity;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -49,6 +51,9 @@ public class MainActivity extends AppCompatActivity {
             DownloadWeatherTask task = new DownloadWeatherTask();
             String url = String.format(WEATHER_URL, city);
             task.execute(url);
+
+            InputMethodManager imm = (InputMethodManager)getSystemService(Activity.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(getCurrentFocus().getRootView().getWindowToken(), 0);
         }
     }
 
@@ -87,10 +92,12 @@ public class MainActivity extends AppCompatActivity {
             try {
                 JSONObject jsonObject = new JSONObject(s);
                 String city = jsonObject.getString("name");
-                String temp = jsonObject.getJSONObject("main").getString("temp");
+                String jsonTemp = jsonObject.getJSONObject("main").getString("temp");
                 String description = jsonObject.getJSONArray("weather").getJSONObject(0).getString("description");
-                String weather = String.format("%s Temp: %sStreet: %s", city, temp, description);
-                tvCity.setText(weather);
+                String temp=Math.round(Float.parseFloat(jsonTemp))+" °C";
+                tvCity.setText(city);
+                tvTemp.setText(temp);
+                tvDesc.setText(description);
             } catch (JSONException e) {
                 e.printStackTrace();
             }
