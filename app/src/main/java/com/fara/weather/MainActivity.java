@@ -5,21 +5,20 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.app.Activity;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
-import java.net.MalformedURLException;
+import java.math.RoundingMode;
 import java.net.URL;
+import java.util.Calendar;
 
 import javax.net.ssl.HttpsURLConnection;
 
@@ -37,7 +36,6 @@ public class MainActivity extends AppCompatActivity {
     private ImageView ivWeather;
     private ImageView ivHumidity;
     private ImageView ivPressure;
-    private ImageView ivTemp;
     private ImageView ivWind;
     private EditText etSearch;
 
@@ -56,8 +54,9 @@ public class MainActivity extends AppCompatActivity {
         etSearch = findViewById(R.id.etSearch);
         ivHumidity = findViewById(R.id.ivHumidity);
         ivPressure = findViewById(R.id.ivPress);
-        ivTemp = findViewById(R.id.ivTemp);
         ivWind = findViewById(R.id.ivWindSpeed);
+
+        setTime();
     }
 
     public void onClickShowWeather(View view) {
@@ -72,7 +71,6 @@ public class MainActivity extends AppCompatActivity {
 
             ivHumidity.setVisibility(View.VISIBLE);
             ivPressure.setVisibility(View.VISIBLE);
-            ivTemp.setVisibility(View.VISIBLE);
             ivWind.setVisibility(View.VISIBLE);
         }
     }
@@ -115,7 +113,7 @@ public class MainActivity extends AppCompatActivity {
                 String jsonTemp = jsonObject.getJSONObject("main").getString("temp");
                 String description = jsonObject.getJSONArray("weather").getJSONObject(0).getString("description");
                 String icon = jsonObject.getJSONArray("weather").getJSONObject(0).getString("icon");
-                String temp = Math.round(Float.parseFloat(jsonTemp)) + " °C";
+                String temp = Math.round(Float.parseFloat(jsonTemp)) + "°C";
                 String pressure = jsonObject.getJSONObject("main").getString("pressure") + " мм";
                 String humidity = jsonObject.getJSONObject("main").getString("humidity") + " %";
                 String windSpeed = jsonObject.getJSONObject("wind").getString("speed") + " м/с";
@@ -172,6 +170,20 @@ public class MainActivity extends AppCompatActivity {
                     }
                 }
             });
+        }
+    }
+
+    private void setTime() {
+        Calendar c = Calendar.getInstance();
+        int timeOfDay = c.get(Calendar.HOUR_OF_DAY);
+
+        View homeLayout = findViewById(R.id.view);
+
+        if (timeOfDay >= 20 && timeOfDay < 5) {
+            homeLayout.setBackgroundResource(R.drawable.cloud);
+
+        } else if (timeOfDay >= 5 && timeOfDay < 20) {
+            homeLayout.setBackgroundResource(R.drawable.sunny);
         }
     }
 }
