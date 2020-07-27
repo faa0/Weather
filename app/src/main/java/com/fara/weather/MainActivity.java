@@ -2,7 +2,9 @@ package com.fara.weather;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
@@ -11,6 +13,9 @@ import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import com.google.android.material.resources.TextAppearance;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -33,12 +38,17 @@ public class MainActivity extends AppCompatActivity {
     private TextView tvHumidity;
     private TextView tvWindSpeed;
 
+    private TextView tvSave;
+
     private ImageView ivWeather;
     private ImageView ivHumidity;
     private ImageView ivPressure;
     private ImageView ivWind;
     private EditText etSearch;
     private View background;
+
+    SharedPreferences sPref;
+    final String SAVED_TEXT = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,13 +62,19 @@ public class MainActivity extends AppCompatActivity {
         tvHumidity = findViewById(R.id.tvHumidity);
         tvWindSpeed = findViewById(R.id.tvWindSpeed);
         ivWeather = findViewById(R.id.ivWeather);
-        etSearch = findViewById(R.id.atvSearch);
+        etSearch = findViewById(R.id.etSearch);
         ivHumidity = findViewById(R.id.ivHumidity);
         ivPressure = findViewById(R.id.ivPress);
         ivWind = findViewById(R.id.ivWindSpeed);
         background = findViewById(R.id.view);
 
+        tvSave = findViewById(R.id.tvSave);
+
         setTime();
+        loadText();
+
+        tvSave.setVisibility(View.VISIBLE);
+
     }
 
     public void onClickShowWeather(View view) {
@@ -68,14 +84,50 @@ public class MainActivity extends AppCompatActivity {
             String url = String.format(WEATHER_URL, city);
             task.execute(url);
 
-            InputMethodManager imm = (InputMethodManager) getSystemService(Activity.INPUT_METHOD_SERVICE);
-            imm.hideSoftInputFromWindow(getCurrentFocus().getRootView().getWindowToken(), 0);
+            hideKeyboard(this);
 
             ivHumidity.setVisibility(View.VISIBLE);
             ivPressure.setVisibility(View.VISIBLE);
             ivWind.setVisibility(View.VISIBLE);
+
+            saveText();
+            tvSave.setText(sPref.getString(SAVED_TEXT, ""));
+            tvSave.setVisibility(View.INVISIBLE);
         }
     }
+
+    private void saveText() {
+        sPref = getPreferences(MODE_PRIVATE);
+        SharedPreferences.Editor ed = sPref.edit();
+        ed.putString(SAVED_TEXT, etSearch.getText().toString());
+        ed.commit();
+    }
+
+    private void loadText() {
+        sPref = getPreferences(MODE_PRIVATE);
+        String savedText = sPref.getString(SAVED_TEXT, "");
+        tvSave.setText(savedText);
+    }
+
+    public void onClickHistory(View view) {
+        etSearch.setText(sPref.getString(SAVED_TEXT, ""));
+        tvSave.setTextColor(R.style.TextAppearance_AppCompat_Body1);
+    }
+
+    public void onClickVisibility(View view) {
+        tvSave.setVisibility(View.VISIBLE);
+        tvSave.setTextColor(getResources().getColor(R.color.black));
+    }
+
+    public static void hideKeyboard(Activity activity) {
+        InputMethodManager imm = (InputMethodManager) activity.getSystemService(Activity.INPUT_METHOD_SERVICE);
+        View view = activity.getCurrentFocus();
+        if (view == null) {
+            view = new View(activity);
+        }
+        imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+    }
+
 
     private class DownloadWeatherTask extends AsyncTask<String, Void, String> {
 
