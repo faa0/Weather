@@ -39,6 +39,7 @@ public class MainActivity extends AppCompatActivity {
     private TextView tvWindSpeed;
 
     private TextView tvSave;
+    private ImageView ivSave;
 
     private ImageView ivWeather;
     private ImageView ivHumidity;
@@ -69,11 +70,13 @@ public class MainActivity extends AppCompatActivity {
         background = findViewById(R.id.view);
 
         tvSave = findViewById(R.id.tvSave);
+        ivSave = findViewById(R.id.ivSave);
 
         setTime();
         loadText();
 
         tvSave.setVisibility(View.VISIBLE);
+        ivSave.setVisibility(View.VISIBLE);
 
     }
 
@@ -93,6 +96,7 @@ public class MainActivity extends AppCompatActivity {
             saveText();
             tvSave.setText(sPref.getString(SAVED_TEXT, ""));
             tvSave.setVisibility(View.INVISIBLE);
+            ivSave.setVisibility(View.INVISIBLE);
         }
     }
 
@@ -111,12 +115,32 @@ public class MainActivity extends AppCompatActivity {
 
     public void onClickHistory(View view) {
         etSearch.setText(sPref.getString(SAVED_TEXT, ""));
-        tvSave.setTextColor(R.style.TextAppearance_AppCompat_Body1);
+        tvSave.setTextColor(getResources().getColor(android.R.color.white));
+
+        String city = etSearch.getText().toString().trim();
+        if (!city.isEmpty()) {
+            DownloadWeatherTask task = new DownloadWeatherTask();
+            String url = String.format(WEATHER_URL, city);
+            task.execute(url);
+
+            hideKeyboard(this);
+
+            ivHumidity.setVisibility(View.VISIBLE);
+            ivPressure.setVisibility(View.VISIBLE);
+            ivWind.setVisibility(View.VISIBLE);
+
+            saveText();
+            tvSave.setText(sPref.getString(SAVED_TEXT, ""));
+            tvSave.setVisibility(View.INVISIBLE);
+            ivSave.setVisibility(View.INVISIBLE);
+            etSearch.setText("");
+        }
     }
 
     public void onClickVisibility(View view) {
         tvSave.setVisibility(View.VISIBLE);
-        tvSave.setTextColor(getResources().getColor(R.color.black));
+        ivSave.setVisibility(View.VISIBLE);
+        tvSave.setTextColor(getResources().getColor(android.R.color.white));
     }
 
     public static void hideKeyboard(Activity activity) {
@@ -127,7 +151,6 @@ public class MainActivity extends AppCompatActivity {
         }
         imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
     }
-
 
     private class DownloadWeatherTask extends AsyncTask<String, Void, String> {
 
