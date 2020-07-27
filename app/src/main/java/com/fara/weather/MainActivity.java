@@ -7,6 +7,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -16,7 +17,6 @@ import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
-import java.math.RoundingMode;
 import java.net.URL;
 import java.util.Calendar;
 
@@ -38,6 +38,7 @@ public class MainActivity extends AppCompatActivity {
     private ImageView ivPressure;
     private ImageView ivWind;
     private EditText etSearch;
+    private View background;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,10 +52,11 @@ public class MainActivity extends AppCompatActivity {
         tvHumidity = findViewById(R.id.tvHumidity);
         tvWindSpeed = findViewById(R.id.tvWindSpeed);
         ivWeather = findViewById(R.id.ivWeather);
-        etSearch = findViewById(R.id.etSearch);
+        etSearch = findViewById(R.id.atvSearch);
         ivHumidity = findViewById(R.id.ivHumidity);
         ivPressure = findViewById(R.id.ivPress);
         ivWind = findViewById(R.id.ivWindSpeed);
+        background = findViewById(R.id.view);
 
         setTime();
     }
@@ -131,41 +133,76 @@ public class MainActivity extends AppCompatActivity {
         }
 
         private void setImage(final ImageView imageView, final String value) {
+
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
                     switch (value) {
                         case "01d":
+                            imageView.setImageDrawable(getResources().getDrawable(R.drawable.d01d, null));
+                            background.setBackgroundResource(R.drawable.cloud);
+                            break;
                         case "01n":
-                            imageView.setImageDrawable(getResources().getDrawable(R.drawable.d01d));
+                            imageView.setImageDrawable(getResources().getDrawable(R.drawable.d11d, null));
+                            background.setBackgroundResource(R.drawable.cloud);
                             break;
                         case "02d":
+                            imageView.setImageDrawable(getResources().getDrawable(R.drawable.d02d, null));
+                            background.setBackgroundResource(R.drawable.cloud);
+                            break;
                         case "02n":
-                            imageView.setImageDrawable(getResources().getDrawable(R.drawable.d02d));
+                            imageView.setImageDrawable(getResources().getDrawable(R.drawable.d11d, null));
+                            background.setBackgroundResource(R.drawable.d02n);
                             break;
                         case "03d":
+                            imageView.setImageDrawable(getResources().getDrawable(R.drawable.d03d, null));
+                            background.setBackgroundResource(R.drawable.cloud);
+                            break;
                         case "03n":
-                            imageView.setImageDrawable(getResources().getDrawable(R.drawable.d03d));
+                            imageView.setImageDrawable(getResources().getDrawable(R.drawable.d03d, null));
+                            background.setBackgroundResource(R.drawable.d0304n);
                             break;
                         case "04d":
+                            imageView.setImageDrawable(getResources().getDrawable(R.drawable.d04d, null));
+                            background.setBackgroundResource(R.drawable.cloud);
+                            break;
                         case "04n":
-                            imageView.setImageDrawable(getResources().getDrawable(R.drawable.d04d));
+                            imageView.setImageDrawable(getResources().getDrawable(R.drawable.d04d, null));
+                            background.setBackgroundResource(R.drawable.d0304n);
                             break;
                         case "09d":
+                            imageView.setImageDrawable(getResources().getDrawable(R.drawable.d09d, null));
+                            background.setBackgroundResource(R.drawable.cloud);
+                            break;
                         case "09n":
-                            imageView.setImageDrawable(getResources().getDrawable(R.drawable.d09d));
+                            imageView.setImageDrawable(getResources().getDrawable(R.drawable.d09d, null));
+                            background.setBackgroundResource(R.drawable.d0910n);
                             break;
                         case "10d":
+                            imageView.setImageDrawable(getResources().getDrawable(R.drawable.d10d, null));
+                            background.setBackgroundResource(R.drawable.cloud);
+                            break;
                         case "10n":
-                            imageView.setImageDrawable(getResources().getDrawable(R.drawable.d10d));
+                            imageView.setImageDrawable(getResources().getDrawable(R.drawable.d11d, null));
+                            background.setBackgroundResource(R.drawable.d0910n);
                             break;
                         case "11d":
+                            background.setBackgroundResource(R.drawable.cloud);
                         case "11n":
-                            imageView.setImageDrawable(getResources().getDrawable(R.drawable.d11d));
+                            imageView.setImageDrawable(getResources().getDrawable(R.drawable.d11d, null));
+                            background.setBackgroundResource(R.drawable.cloud);
                             break;
                         case "13d":
+                            background.setBackgroundResource(R.drawable.cloud);
                         case "13n":
-                            imageView.setImageDrawable(getResources().getDrawable(R.drawable.d13d));
+                            imageView.setImageDrawable(getResources().getDrawable(R.drawable.d13d, null));
+                            background.setBackgroundResource(R.drawable.cloud);
+                            break;
+                        case "50d":
+                            background.setBackgroundResource(R.drawable.cloud);
+                        case "50n":
+                            imageView.setImageDrawable(getResources().getDrawable(R.drawable.d13d, null));
+                            background.setBackgroundResource(R.drawable.cloud);
                             break;
                     }
                 }
@@ -177,13 +214,11 @@ public class MainActivity extends AppCompatActivity {
         Calendar c = Calendar.getInstance();
         int timeOfDay = c.get(Calendar.HOUR_OF_DAY);
 
-        View homeLayout = findViewById(R.id.view);
-
         if (timeOfDay >= 20 && timeOfDay < 5) {
-            homeLayout.setBackgroundResource(R.drawable.cloud);
+            background.setBackgroundResource(R.drawable.cloud);
 
         } else if (timeOfDay >= 5 && timeOfDay < 20) {
-            homeLayout.setBackgroundResource(R.drawable.sunny);
+            background.setBackgroundResource(R.drawable.sunny);
         }
     }
 }

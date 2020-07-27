@@ -29,14 +29,13 @@
         android:id="@+id/cardView"
         android:layout_width="300dp"
         android:layout_height="100dp"
-        android:layout_marginTop="250dp"
         android:elevation="4dp"
         app:cardCornerRadius="10dp"
         app:cardElevation="1dp"
         app:layout_constraintBottom_toTopOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/view">
+        app:layout_constraintTop_toBottomOf="parent">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -45,11 +44,11 @@
             android:orientation="vertical">
 
             <EditText
-                android:id="@+id/etSearch"
+                android:id="@+id/atvSearch"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="25dp"
-                android:inputType="text" />
+                android:inputType="text"  />
         </LinearLayout>
     </androidx.cardview.widget.CardView>
 
@@ -57,7 +56,7 @@
         android:id="@+id/cardView2"
         android:layout_width="300dp"
         android:layout_height="200dp"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="50dp"
         android:elevation="4dp"
         app:cardCornerRadius="10dp"
         app:cardElevation="1dp"
@@ -91,8 +90,8 @@
                     android:layout_gravity="center_vertical"
                     android:gravity="center_horizontal"
                     android:textSize="36sp"
-                    app:layout_constraintEnd_toStartOf="@id/ivWeather"
                     app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toStartOf="@id/ivWeather"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
@@ -119,8 +118,8 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:orientation="horizontal"
-                android:layout_weight="1">
+                android:layout_weight="1"
+                android:orientation="horizontal">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -212,4 +211,5 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/cardView"
         app:layout_constraintVertical_bias="0.0" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
