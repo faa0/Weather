@@ -1,21 +1,17 @@
 package com.fara.weather;
 
-import androidx.appcompat.app.AppCompatActivity;
-
-import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.material.resources.TextAppearance;
+import androidx.appcompat.app.AppCompatActivity;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -23,6 +19,8 @@ import org.json.JSONObject;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 
 import javax.net.ssl.HttpsURLConnection;
@@ -77,12 +75,12 @@ public class MainActivity extends AppCompatActivity {
 
         tvSave.setVisibility(View.VISIBLE);
         ivSave.setVisibility(View.VISIBLE);
-
     }
 
     public void onClickShowWeather(View view) {
         String city = etSearch.getText().toString().trim();
-        if (!city.isEmpty()) {
+
+        if (!city.isEmpty() && !city.equals("Ukraine")){
             DownloadWeatherTask task = new DownloadWeatherTask();
             String url = String.format(WEATHER_URL, city);
             task.execute(url);
@@ -208,10 +206,6 @@ public class MainActivity extends AppCompatActivity {
         }
 
         private void setImage(final ImageView imageView, final String value) {
-
-            runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
                     switch (value) {
                         case "01d":
                             imageView.setImageDrawable(getResources().getDrawable(R.drawable.d01d, null));
@@ -281,9 +275,7 @@ public class MainActivity extends AppCompatActivity {
                             break;
                     }
                 }
-            });
-        }
-    }
+            }
 
     private void setTime() {
         Calendar c = Calendar.getInstance();
