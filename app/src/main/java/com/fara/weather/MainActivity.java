@@ -2,15 +2,21 @@ package com.fara.weather;
 
 import android.app.Activity;
 import android.content.SharedPreferences;
+import android.content.res.ColorStateList;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
+
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -35,6 +41,8 @@ public class MainActivity extends AppCompatActivity {
 
     private TextView tvSave;
     private ImageView ivSave;
+
+    private FloatingActionButton fabSearch;
 
     private ImageView ivHumidity;
     private ImageView ivPressure;
@@ -64,6 +72,8 @@ public class MainActivity extends AppCompatActivity {
 
         tvSave = findViewById(R.id.tvSave);
         ivSave = findViewById(R.id.ivSave);
+
+        fabSearch = findViewById(R.id.fabSearch);
 
         setTime();
         loadText();
@@ -263,9 +273,13 @@ public class MainActivity extends AppCompatActivity {
 
         if (timeOfDay >= 20 && timeOfDay < 5) {
             background.setBackgroundResource(R.drawable.d01n);
+            fabSearch.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.colorPrimaryDark)));
+            getWindow().setStatusBarColor(getResources().getColor(R.color.colorPrimaryDark));
 
         } else if (timeOfDay >= 5 && timeOfDay < 20) {
             background.setBackgroundResource(R.drawable.d01d);
+            fabSearch.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.blue)));
+            getWindow().setStatusBarColor(getResources().getColor(R.color.blue));
         }
     }
 }
