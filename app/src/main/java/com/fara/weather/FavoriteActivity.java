@@ -1,24 +1,15 @@
 package com.fara.weather;
 
-import android.annotation.SuppressLint;
-import android.app.Activity;
+import androidx.appcompat.app.AppCompatActivity;
+
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.res.ColorStateList;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
-import android.view.Window;
-import android.view.WindowManager;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
-
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.cardview.widget.CardView;
-import androidx.core.content.ContextCompat;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
@@ -28,11 +19,10 @@ import org.json.JSONObject;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.URL;
-import java.util.Calendar;
 
 import javax.net.ssl.HttpsURLConnection;
 
-public class MainActivity extends AppCompatActivity {
+public class FavoriteActivity extends AppCompatActivity {
 
     private final String WEATHER_URL = "https://api.openweathermap.org/data/2.5/weather?q=%s&appid=fc50456f9dc37a5ca791d63a5690caa0&lang=ru&units=metric";
 
@@ -43,22 +33,20 @@ public class MainActivity extends AppCompatActivity {
     private TextView tvHumidity;
     private TextView tvWindSpeed;
 
+    private FloatingActionButton fabSearch;
+
     private ImageView ivHumidity;
     private ImageView ivPressure;
     private ImageView ivWind;
-
-    private FloatingActionButton fabSearch;
-    private EditText etSearch;
     private View background;
 
     SharedPreferences sPref;
     final String SAVED_TEXT = "";
 
-    @SuppressLint("ClickableViewAccessibility")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_favorite);
 
         tvCity = findViewById(R.id.tvCity);
         tvTemp = findViewById(R.id.tvTemp);
@@ -66,55 +54,21 @@ public class MainActivity extends AppCompatActivity {
         tvPress = findViewById(R.id.tvPress);
         tvHumidity = findViewById(R.id.tvHumidity);
         tvWindSpeed = findViewById(R.id.tvWindSpeed);
-        etSearch = findViewById(R.id.etSearch);
         ivHumidity = findViewById(R.id.ivHumidity);
         ivPressure = findViewById(R.id.ivPress);
         ivWind = findViewById(R.id.ivWindSpeed);
         background = findViewById(R.id.view);
-
         fabSearch = findViewById(R.id.fabSearch);
 
-        setTime();
+        loadText();
 
-//        sPref = getPreferences(MODE_PRIVATE);
-//        SharedPreferences.Editor ed = sPref.edit();
-//        boolean firstRun = sPref.getBoolean("firstRun", true);
-//        if (firstRun) {
-//            ed.putBoolean("firstRun", false);
-//            ed.commit();
-//        } else {
-//            loadText();
-//        }
-    }
+        Intent intent = getIntent();
+        String city = intent.getStringExtra("city");
 
-    public void onClickShowWeather(View view) {
-        String city = etSearch.getText().toString().trim();
+        DownloadWeatherTask task = new DownloadWeatherTask();
+        String url = String.format(WEATHER_URL, city);
+        task.execute(url);
 
-        if (!city.isEmpty()) {
-            DownloadWeatherTask task = new DownloadWeatherTask();
-            String url = String.format(WEATHER_URL, city);
-            task.execute(url);
-
-            hideKeyboard(this);
-        }
-    }
-
-    public void onClickAddFavorite(View view) {
-        String city = etSearch.getText().toString().trim();
-        if (!city.isEmpty()) {
-            Intent intent = new Intent(this, FavoriteActivity.class);
-            intent.putExtra("city", city);
-            startActivity(intent);
-            overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_left);
-        } else {
-            Toast.makeText(this, "Пустое поле ввода ", Toast.LENGTH_SHORT).show();
-        }
-    }
-
-    public void onClickFavorite(View view) {
-        Intent intent = new Intent(this, FavoriteActivity.class);
-        startActivity(intent);
-        overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_left);
     }
 
     private class DownloadWeatherTask extends AsyncTask<String, Void, String> {
@@ -167,28 +121,9 @@ public class MainActivity extends AppCompatActivity {
                 tvHumidity.setText(humidity);
                 tvWindSpeed.setText(windSpeed);
                 setImage(background, icon);
-                ivHumidity.setVisibility(View.VISIBLE);
-                ivPressure.setVisibility(View.VISIBLE);
-                ivWind.setVisibility(View.VISIBLE);
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-        }
-    }
-
-    private void setTime() {
-        Calendar c = Calendar.getInstance();
-        int timeOfDay = c.get(Calendar.HOUR_OF_DAY);
-
-        if (timeOfDay >= 20 && timeOfDay < 5) {
-            background.setBackgroundResource(R.drawable.d01n);
-            fabSearch.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.colorPrimaryDark)));
-            getWindow().setStatusBarColor(getResources().getColor(R.color.colorPrimaryDark));
-
-        } else if (timeOfDay >= 5 && timeOfDay < 20) {
-            background.setBackgroundResource(R.drawable.d01d);
-            fabSearch.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.blue)));
-            getWindow().setStatusBarColor(getResources().getColor(R.color.blue));
         }
     }
 
@@ -248,12 +183,32 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public static void hideKeyboard(Activity activity) {
-        InputMethodManager imm = (InputMethodManager) activity.getSystemService(Activity.INPUT_METHOD_SERVICE);
-        View view = activity.getCurrentFocus();
-        if (view == null) {
-            view = new View(activity);
-        }
-        imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+    private void saveText() {
+        sPref = getPreferences(MODE_PRIVATE);
+        SharedPreferences.Editor ed = sPref.edit();
+        ed.putString(SAVED_TEXT, tvCity.getText().toString());
+        ed.commit();
+    }
+
+    private void loadText() {
+        sPref = getPreferences(MODE_PRIVATE);
+        String savedText = sPref.getString(SAVED_TEXT, "");
+        DownloadWeatherTask task = new DownloadWeatherTask();
+        String url = String.format(WEATHER_URL, savedText);
+        task.execute(url);
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        Intent intent = new Intent(this, MainActivity.class);
+        startActivity(intent);
+        overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_right);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        saveText();
     }
 }
